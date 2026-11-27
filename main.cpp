@@ -2,15 +2,20 @@
 #include "./trace_replayer.hpp"
 #include <cstddef>
 #include <cstdio>
+#include <fstream>
 #include <limits>
 #include <print>
+#include <system_error>
 #include <vector>
 
 std::size_t CACHE_SIZE = 16000; // in blocks
 
 int main(int argc, char **argv) {
-  TracePlayer TP("/home/shado/Projects/Thesis_Research/opal-sim/traces/"
-                 "conversation_trace_mooncake.jsonl");
+  if (argc <= 1 || !std::fstream(argv[1]).good()) {
+    std::cout << "Input valid Path to jsonl trace file as argument";
+    return 1;
+  }
+  TracePlayer TP(argv[1]);
   Trace *T = TP.step();
   // KV_Store store;
   LRU_Store lruStore(CACHE_SIZE);
